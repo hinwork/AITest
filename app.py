@@ -9,7 +9,9 @@ tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
 model = BertForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2)
 
 KEYWORDS = ['膝', '膝蓋', '膝關節', '膝關', '膝部']
-
+def home():
+    return "AI chat for knee ready!"
+    
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
