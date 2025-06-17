@@ -9,7 +9,7 @@ model = BertForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2)
 
 @app.route("/")
 def home():
-    return "AI ready!"
+    return "AI ready for chat!"
 
 @app.route("/chat", methods=["POST"])
 def chat():
