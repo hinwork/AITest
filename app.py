@@ -1,3 +1,4 @@
+from flask import Flask, request, jsonify
 from transformers import BertTokenizer, BertForSequenceClassification
 import torch
 
