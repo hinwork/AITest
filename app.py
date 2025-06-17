@@ -1,17 +1,22 @@
 from flask import Flask, request, jsonify
 from transformers import BertTokenizer, BertForSequenceClassification
 import torch
+import os
 
 app = Flask(__name__)
 
 MODEL_NAME = "bert-base-chinese"
-tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
-model = BertForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2)
+CACHE_DIR = os.path.expanduser("~/.cache/huggingface/hub")
+
+tokenizer = BertTokenizer.from_pretrained(MODEL_NAME, cache_dir=CACHE_DIR)
+model = BertForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2, cache_dir=CACHE_DIR)
 
 KEYWORDS = ['膝', '膝蓋', '膝關節', '膝關', '膝部']
+
+@app.route("/")
 def home():
     return "AI chat for knee ready!"
-    
+
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
@@ -28,7 +33,6 @@ def chat():
         answer = "您好，目前我主要回答膝關節相關的健康問題，請問您有膝蓋不適嗎？"
 
     return jsonify({"answer": answer})
-    
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
-
