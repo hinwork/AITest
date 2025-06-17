@@ -12,12 +12,23 @@ model = BertForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2)
 def home():
     return "AI ready for chat!"
 
+KEYWORDS = ['knee']
+
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
     question = data.get("question", "")
 
-    answer = f"it is AI：({question})"
+    if any(k in question for k in KEYWORDS):
+        label = 1
+    else:
+        label = 0
+
+    if label == 1:
+        answer = "knee question"
+    else:
+        answer = "not a knee question"
+
     return jsonify({"answer": answer})
 
 
