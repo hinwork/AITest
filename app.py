@@ -4,7 +4,6 @@ import torch
 
 app = Flask(__name__)
 
-# 更換為可用的公開模型
 MODEL_NAME = "bert-base-chinese"
 tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
 model = BertForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2)
@@ -27,5 +26,7 @@ def chat():
         answer = "您好，目前我主要回答膝關節相關的健康問題，請問您有膝蓋不適嗎？"
 
     return jsonify({"answer": answer})
-
+    
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)
 
