@@ -5,11 +5,11 @@ import torch
 app = Flask(__name__)
 
 # 載入模型
-tokenizer_knee = BertTokenizer.from_pretrained('./knee_model')
-model_knee = BertForSequenceClassification.from_pretrained('./knee_model')
+tokenizer_knee = BertTokenizer.from_pretrained('yellowcrown0120/knee_model/knee_model')
+model_knee = BertForSequenceClassification.from_pretrained('yellowcrown0120/knee_model/knee_model')
 
-tokenizer_time = BertTokenizer.from_pretrained('./time_model')
-model_time = BertForSequenceClassification.from_pretrained('./time_model')
+tokenizer_time = BertTokenizer.from_pretrained('yellowcrown0120/knee_model/time_model')
+model_time = BertForSequenceClassification.from_pretrained('yellowcrown0120/knee_model/time_model')
 
 def predict_knee(text):
     inputs = tokenizer_knee(text, return_tensors="pt", truncation=True, padding=True, max_length=32)
