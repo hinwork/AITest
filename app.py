@@ -35,7 +35,7 @@ def chat():
 
     if not history:
         reply = "歡迎，若想知道有關膝關節痛的資訊，請說出『我有膝痛』。"
-        return jsonify({"reply": reply, "knee_label": None, "time_label": None})
+        return jsonify({"answer": reply, "knee_label": None, "time_label": None})
 
     if knee_label != 1:
         knee_label = predict_knee(user)
@@ -69,7 +69,7 @@ def chat():
                      "請問你是否有膝關節不適嗎？")
 
     return jsonify({
-        "reply": reply,
+        "answer": reply,
         "knee_label": int(knee_label) if knee_label is not None else None,
         "time_label": int(time_label) if time_label is not None else None
     })
