@@ -1,3 +1,29 @@
+import os
+import requests
+import zipfile
+
+def download_and_extract(url, target_dir):
+    zip_path = f"{target_dir}.zip"
+    if not os.path.exists(target_dir):
+        print(f"Downloading {url}")
+        r = requests.get(url)
+        r.raise_for_status()
+        with open(zip_path, 'wb') as f:
+            f.write(r.content)
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(target_dir)
+        os.remove(zip_path)
+        print(f"Unzipped to {target_dir}")
+    else:
+        print(f"{target_dir} already exists, skipping download.")
+
+# 你的 GCS 公開 zip 檔案連結（請替換成你自己的網址）
+KNEE_MODEL_ZIP_URL = "https://storage.googleapis.com/aichatbotmodel/knee_model.zip"
+TIME_MODEL_ZIP_URL = "https://storage.googleapis.com/aichatbotmodel/time_model.zip"
+
+download_and_extract(KNEE_MODEL_ZIP_URL, "./knee_model")
+download_and_extract(TIME_MODEL_ZIP_URL, "./time_model")
+
 from flask import Flask, request, jsonify
 from transformers import BertTokenizer, BertForSequenceClassification
 import torch
@@ -5,11 +31,11 @@ import torch
 app = Flask(__name__)
 
 # 載入模型
-tokenizer_knee = BertTokenizer.from_pretrained('yellowcrown0120/knee_model')
-model_knee = BertForSequenceClassification.from_pretrained('yellowcrown0120/knee_model')
+tokenizer_knee = BertTokenizer.from_pretrained('./knee_model')
+model_knee = BertForSequenceClassification.from_pretrained('./knee_model')
 
-tokenizer_time = BertTokenizer.from_pretrained('yellowcrown0120/time_model')
-model_time = BertForSequenceClassification.from_pretrained('yellowcrown0120/time_model')
+tokenizer_time = BertTokenizer.from_pretrained('./time_model')
+model_time = BertForSequenceClassification.from_pretrained('./time_model')
 
 def predict_knee(text):
     inputs = tokenizer_knee(text, return_tensors="pt", truncation=True, padding=True, max_length=32)
