@@ -20,7 +20,7 @@ def download_and_extract(url, target_dir):
     else:
         print(f"{target_dir} already exists, skipping download.")
 
-# 你的 GCS 公開 zip 檔案連結（請替換成你自己的網址）
+# Download models if not present
 KNEE_MODEL_ZIP_URL = "https://storage.googleapis.com/aichatbotmodel/knee_model.zip"
 TIME_MODEL_ZIP_URL = "https://storage.googleapis.com/aichatbotmodel/time_model.zip"
 download_and_extract(KNEE_MODEL_ZIP_URL, "./knee_model")
@@ -28,7 +28,7 @@ download_and_extract(TIME_MODEL_ZIP_URL, "./time_model")
 
 app = Flask(__name__)
 
-# 載入模型
+# Load models
 tokenizer_knee = BertTokenizer.from_pretrained('./knee_model/knee_model')
 model_knee = BertForSequenceClassification.from_pretrained('./knee_model/knee_model')
 tokenizer_time = BertTokenizer.from_pretrained('./time_model/time_model')
@@ -53,7 +53,6 @@ def chat():
     data = request.get_json()
     history = data.get("history", [])
     user = history[-1] if history else ""
-    # 支援狀態傳遞
     knee_label = data.get("knee_label")
     time_label = data.get("time_label")
 
@@ -64,28 +63,40 @@ def chat():
     if user_clean in end_words:
         return jsonify({"answer":"感謝查詢。","knee_label": None, "time_label": None})
 
-    # 第一次或沒輸入
+    # 初次或沒輸入
     if not history or user.strip() == "":
         reply = "歡迎，若想知道有關膝關節痛的資訊，請說出『我有膝痛』。"
         return jsonify({"answer": reply, "knee_label": None, "time_label": None})
 
-    # 狀態更新
-    # 1. 如果knee_label還沒有(或不是1)，則根據輸入判斷
-    if knee_label is None or knee_label != 1:
-        if user_clean in ['yes', '是', '是的', '有']:
+    # 膝痛狀態判斷
+    yes_words = ['yes', '是', '是的', '有']
+    no_words = ['no', '否', '沒有', '不是', '不', '沒']
+
+    # --- 核心狀態流轉 ---
+    # 若已經有膝痛（knee_label==1），只有明確否認才變0，否則一直保持1
+    if knee_label == 1:
+        if user_clean in no_words:
+            knee_label = 0
+        else:
+            knee_label = 1  # 強制維持1
+    else:
+        if user_clean in yes_words:
             knee_label = 1
+        elif user_clean in no_words:
+            knee_label = 0
         else:
             knee_label = predict_knee(user)
 
-    # 2. 如果time_label還沒有(或不是1/0)，則根據輸入判斷
-    if time_label is None or (time_label != 1 and time_label != 0):
-        # 若knee_label已確認才預測time
-        if knee_label == 1:
-            time_label = predict_time(user)
-
-    # 對話邏輯
+    # 時間狀態判斷（只在膝痛狀態下才做）
     if knee_label == 1:
-        if time_label != 1 and time_label != 0:
+        if time_label not in [0, 1]:
+            time_label = predict_time(user)
+    else:
+        time_label = None
+
+    # --- 回應邏輯 ---
+    if knee_label == 1:
+        if time_label not in [0, 1]:
             reply = "請問你膝痛持續了多久？"
         elif time_label == 1:
             reply = (
@@ -106,11 +117,10 @@ def chat():
         else:
             reply = "謝謝你的資訊。"
     else:
-        # 這裡也要用 .lower() 比較
-        if user_clean in ['yes', '是', '是的', '有']:
+        if user_clean in yes_words:
             reply = "請問你膝痛持續了多久？"
             knee_label = 1
-        elif user_clean in ['no', '否', '沒有', '不是', '不', '沒']:
+        elif user_clean in no_words:
             reply = (
                 "抱歉，我只能夠處理膝關節痛的問題。\n"
                 "若想知道有關膝關節痛的資訊，請說出『我有膝痛』。"
