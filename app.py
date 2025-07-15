@@ -84,15 +84,15 @@ def chat():
                      "三個月以上是屬於慢性疼痛，以下的為您介紹一些運動影片，請在沒有疼痛的情況下做。\n"
                      "若身體有不適或情況變得嚴重，請諮詢醫生的意見。\n"
                      "#RecommandChronic")
-                     time_label = 2
-                     Ans_But_Not_Related = None
+            time_label = 2
+            Ans_But_Not_Related = None
         elif time_label == 0:
             reply = ("知道你膝痛持續了三個月內。\n"
                      "三個月內是屬於急性疼痛，以下的為您介紹一些運動影片，請在沒有疼痛的情況下做。\n"
                      "若身體有不適或情況變得嚴重，請諮詢醫生的意見。\n"
                      "#RecommandAcute")
-                     time_label = 2
-                     Ans_But_Not_Related = None
+            time_label = 2
+            Ans_But_Not_Related = None
         else:
             reply = "謝謝你的資訊。"
     elif Ans_But_Not_Related = 1:
