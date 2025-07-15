@@ -59,6 +59,9 @@ def chat():
     end_words =  ['exit', 'quit', 'q', 'bye', '再見']
     user_clean = user.strip().lower()
 
+    yes_words = ['yes', '是', '是的', '有']
+    no_words = ['no', '否', '沒有', '不是', '不', '沒']
+
     # 結束指令
     if user_clean in end_words:
         return jsonify({"answer":"感謝查詢。","knee_label": None, "time_label": None})
@@ -68,18 +71,23 @@ def chat():
         reply = "歡迎，若想知道有關膝關節痛的資訊，請說出『我有膝痛』。"
         return jsonify({"answer": reply, "knee_label": None, "time_label": None})
 
-    # 膝痛狀態判斷
-    yes_words = ['yes', '是', '是的', '有']
-    no_words = ['no', '否', '沒有', '不是', '不', '沒']
-
-    # --- 核心狀態流轉 ---
-    # 若已經有膝痛（knee_label==1），只有明確否認才變0，否則一直保持1
+    # ----------- 決策邏輯 -----------
+    # 如果已經確認有膝痛（knee_label==1），除非明確否認，永遠保持1
     if knee_label == 1:
         if user_clean in no_words:
             knee_label = 0
         else:
-            knee_label = 1  # 強制維持1
+            # 永遠保持1，不再預測，不再覆蓋
+            knee_label = 1
+    elif knee_label == 0:
+        if user_clean in yes_words:
+            knee_label = 1
+        elif user_clean in no_words:
+            knee_label = 0
+        else:
+            knee_label = predict_knee(user)
     else:
+        # 第一次或未知狀態
         if user_clean in yes_words:
             knee_label = 1
         elif user_clean in no_words:
@@ -87,14 +95,14 @@ def chat():
         else:
             knee_label = predict_knee(user)
 
-    # 時間狀態判斷（只在膝痛狀態下才做）
+    # 時間判斷
     if knee_label == 1:
         if time_label not in [0, 1]:
             time_label = predict_time(user)
     else:
         time_label = None
 
-    # --- 回應邏輯 ---
+    # 回答邏輯
     if knee_label == 1:
         if time_label not in [0, 1]:
             reply = "請問你膝痛持續了多久？"
@@ -136,6 +144,7 @@ def chat():
         "knee_label": int(knee_label) if knee_label is not None else None,
         "time_label": int(time_label) if time_label is not None else None
     })
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
