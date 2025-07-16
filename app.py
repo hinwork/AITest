@@ -61,8 +61,10 @@ def chat():
 
     yes_words = ['yes', '是', '是的', '有']
     no_words = ['no', '否', '沒有', '不是', '不', '沒']
+    debug = ""
 
-    print("knee_label:",knee_label,"user:",user)
+   
+    
 
     # 結束指令
     if user_clean in end_words:
@@ -71,50 +73,52 @@ def chat():
     # 初次或沒輸入
     if not history or user.strip() == "":
         reply = "歡迎，若想知道有關膝關節痛的資訊，請說出『我有膝痛』。"
-        return jsonify({"answer": reply, "knee_label": None, "time_label": None})
+        return jsonify({"answer": reply, "knee_label": knee_label, "time_label": time_label})
 
     # ----------- 決策邏輯 -----------
     # 如果已經確認有膝痛（knee_label==1），除非明確否認，永遠保持1
     if knee_label == 1:
         if user_clean in no_words:
+            debug += "1 then no"
             knee_label = 0
         else:
             # 永遠保持1，不再預測，不再覆蓋
+            debug += "0 then 1"
             knee_label = 1
     elif knee_label == 0:
-        print("knee_label = 0")
         if user_clean in yes_words:
+            debug += "0 then yes"
             knee_label = 1
-            print("knee_label = 0,then say yes")
         elif user_clean in no_words:
-            knee_label = 0
-            print("knee_label = 0,then say no")
+            debug += "0 then no"
+            knee_label = 0  
         else:
-            print("knee_label = 0,then predict")
+            debug += "0 then predict"
             knee_label = predict_knee(user)
     else:
         # 第一次或未知狀態
         if user_clean in yes_words:
+            debug += "unknown then yes"
             knee_label = 1
         elif user_clean in no_words:
+            debug += "unknown then no"
             knee_label = 0
         else:
-            print("knee_label = else,then predict")
+            debug += "unknown then predict"
             knee_label = predict_knee(user)
-
     # 時間判斷
     if knee_label == 1:
         if time_label not in [0, 1]:
+            debug += "1 then predict time"
             time_label = predict_time(user)
     else:
         time_label = None
-
     # 回答邏輯
     if knee_label == 1:
         if time_label not in [0, 1]:
             reply = "請問你膝痛持續了多久？"
         elif time_label == 1:
-            reply = (
+            reply = (debug+
                 "知道你膝痛持續了三個月以上。\n"
                 "三個月以上是屬於慢性疼痛，以下的為您介紹一些運動影片，請在沒有疼痛的情況下做。\n"
                 "若身體有不適或情況變得嚴重，請諮詢醫生的意見。\n"
@@ -122,7 +126,7 @@ def chat():
             )
             time_label = 2
         elif time_label == 0:
-            reply = (
+            reply = (debug+
                 "知道你膝痛持續了三個月內。\n"
                 "三個月內是屬於急性疼痛，以下的為您介紹一些運動影片，請在沒有疼痛的情況下做。\n"
                 "若身體有不適或情況變得嚴重，請諮詢醫生的意見。\n"
@@ -130,26 +134,26 @@ def chat():
             )
             time_label = 2
         else:
-            reply = "謝謝你的資訊。"
+            reply = debug+"謝謝你的資訊。"
     else:
         if user_clean in yes_words:
-            reply = "請問你膝痛持續了多久？"
+            reply = debug+"請問你膝痛持續了多久？"
             knee_label = 1
         elif user_clean in no_words:
-            reply = (
+            reply = (debug+
                 "抱歉，我只能夠處理膝關節痛的問題。\n"
                 "若想知道有關膝關節痛的資訊，請說出『我有膝痛』。"
             )
         else:
-            reply = (
+            reply = (debug+
                 "抱歉，我只能夠處理膝關節痛的問題，\n"
                 "請問你是否有膝關節不適嗎？"
             )
 
     return jsonify({
         "answer": reply,
-        "knee_label": int(knee_label) if knee_label is not None else None,
-        "time_label": int(time_label) if time_label is not None else None
+        "knee_label": int(knee_label)if knee_label is not None else None,
+        "time_label": int(time_label)if time_label is not None else None
     })
 
 
