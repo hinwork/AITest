@@ -62,6 +62,8 @@ def chat():
     yes_words = ['yes', '是', '是的', '有']
     no_words = ['no', '否', '沒有', '不是', '不', '沒']
 
+    print("knee_label:",knee_label,"user:",user)
+
     # 結束指令
     if user_clean in end_words:
         return jsonify({"answer":"感謝查詢。","knee_label": None, "time_label": None})
@@ -80,11 +82,15 @@ def chat():
             # 永遠保持1，不再預測，不再覆蓋
             knee_label = 1
     elif knee_label == 0:
+        print("knee_label = 0"):
         if user_clean in yes_words:
             knee_label = 1
+            print("knee_label = 0,then say yes"):
         elif user_clean in no_words:
             knee_label = 0
+            print("knee_label = 0,then say no"):
         else:
+            print("knee_label = 0,then predict"):
             knee_label = predict_knee(user)
     else:
         # 第一次或未知狀態
@@ -93,6 +99,7 @@ def chat():
         elif user_clean in no_words:
             knee_label = 0
         else:
+            print("knee_label = else,then predict"):
             knee_label = predict_knee(user)
 
     # 時間判斷
