@@ -82,7 +82,6 @@ def chat():
             debug += "1 then no"
             knee_label = 0
         else:
-            # 永遠保持1，不再預測，不再覆蓋
             debug += "0 then 1"
             knee_label = 1
     elif knee_label == 0:
