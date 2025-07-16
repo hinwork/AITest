@@ -82,15 +82,15 @@ def chat():
             # 永遠保持1，不再預測，不再覆蓋
             knee_label = 1
     elif knee_label == 0:
-        print("knee_label = 0"):
+        print("knee_label = 0")
         if user_clean in yes_words:
             knee_label = 1
-            print("knee_label = 0,then say yes"):
+            print("knee_label = 0,then say yes")
         elif user_clean in no_words:
             knee_label = 0
-            print("knee_label = 0,then say no"):
+            print("knee_label = 0,then say no")
         else:
-            print("knee_label = 0,then predict"):
+            print("knee_label = 0,then predict")
             knee_label = predict_knee(user)
     else:
         # 第一次或未知狀態
@@ -99,7 +99,7 @@ def chat():
         elif user_clean in no_words:
             knee_label = 0
         else:
-            print("knee_label = else,then predict"):
+            print("knee_label = else,then predict")
             knee_label = predict_knee(user)
 
     # 時間判斷
