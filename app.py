@@ -62,7 +62,7 @@ def chat():
     debug = ""
     # 結束指令
     if user_clean in end_words:
-        return jsonify({"answer":"感謝查詢。","knee_label": None, "time_label": None})
+        return jsonify({"answer":"感謝查詢。","knee_label": -1, "time_label": -1})
 
     # 初次或沒輸入
     if not history or user.strip() == "":
@@ -105,7 +105,7 @@ def chat():
             debug += "1 then predict time"
             time_label = predict_time(user)
     else:
-        time_label = None
+        time_label = -1
     # 回答邏輯
     if knee_label == 1:
         if time_label not in [0, 1]:
@@ -145,8 +145,8 @@ def chat():
 
     return jsonify({
         "answer": reply,
-        "knee_label": int(knee_label)if knee_label is not None else None,
-        "time_label": int(time_label)if time_label is not None else None
+        "knee_label": int(knee_label)if knee_label is not None else -1,
+        "time_label": int(time_label)if time_label is not None else -1
     })
 
 
