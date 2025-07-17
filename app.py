@@ -60,15 +60,12 @@ def chat():
     yes_words = ['yes', '是', '是的', '有']
     no_words = ['no', '否', '沒有', '不是', '不', '沒']
     debug = ""
-    # 結束指令
     if user_clean in end_words:
         return jsonify({"answer":"感謝查詢。","knee_label": -1, "time_label": -1})
-
     # 初次或沒輸入
     if not history or user.strip() == "":
         reply = "歡迎，若想知道有關膝關節痛的資訊，請說出『我有膝痛』。"
         return jsonify({"answer": reply, "knee_label": knee_label, "time_label": time_label})
-
     # ----------- 決策邏輯 -----------
     # 如果已經確認有膝痛（knee_label==1），除非明確否認，永遠保持1
     if knee_label == 1:
