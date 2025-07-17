@@ -33,7 +33,7 @@ tokenizer_knee = BertTokenizer.from_pretrained('./knee_model/knee_model')
 model_knee = BertForSequenceClassification.from_pretrained('./knee_model/knee_model')
 tokenizer_time = BertTokenizer.from_pretrained('./time_model/time_model')
 model_time = BertForSequenceClassification.from_pretrained('./time_model/time_model')
-debug = ""
+
 def predict_knee(text):
     inputs = tokenizer_knee(text, return_tensors="pt", truncation=True, padding=True, max_length=32)
     with torch.no_grad():
@@ -62,7 +62,7 @@ def chat():
     yes_words = ['yes', '是', '是的', '有']
     no_words = ['no', '否', '沒有', '不是', '不', '沒']
     
-
+    debug = ""
    
     
 
