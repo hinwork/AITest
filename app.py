@@ -102,6 +102,7 @@ def chat():
             debug += "1 then predict time"
             time_label = predict_time(user)
     else:
+        debug += "time -1"
         time_label = -1
     # 回答邏輯
     if knee_label == 1:
