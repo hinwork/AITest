@@ -19,13 +19,11 @@ def download_and_extract(url, target_dir):
         print(f"Unzipped to {target_dir}")
     else:
         print(f"{target_dir} already exists, skipping download.")
-
 # Download models if not present
 KNEE_MODEL_ZIP_URL = "https://storage.googleapis.com/aichatbotmodel/knee_model.zip"
 TIME_MODEL_ZIP_URL = "https://storage.googleapis.com/aichatbotmodel/time_model.zip"
 download_and_extract(KNEE_MODEL_ZIP_URL, "./knee_model")
 download_and_extract(TIME_MODEL_ZIP_URL, "./time_model")
-
 app = Flask(__name__)
 
 # Load models
@@ -60,6 +58,7 @@ def chat():
     yes_words = ['yes', '是', '是的', '有']
     no_words = ['no', '否', '沒有', '不是', '不', '沒']
     debug = ""
+    
     if user_clean in end_words:
         return jsonify({"answer":"感謝查詢。","knee_label": -1, "time_label": -1})
     # 初次或沒輸入
