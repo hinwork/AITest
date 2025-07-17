@@ -55,17 +55,11 @@ def chat():
     user = history[-1] if history else ""
     knee_label = data.get("knee_label")
     time_label = data.get("time_label")
-
     end_words =  ['exit', 'quit', 'q', 'bye', '再見']
     user_clean = user.strip().lower()
-
     yes_words = ['yes', '是', '是的', '有']
     no_words = ['no', '否', '沒有', '不是', '不', '沒']
-    
     debug = ""
-   
-    
-
     # 結束指令
     if user_clean in end_words:
         return jsonify({"answer":"感謝查詢。","knee_label": None, "time_label": None})
