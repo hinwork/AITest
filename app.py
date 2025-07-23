@@ -106,7 +106,7 @@ def chat():
     # 回答邏輯
     if knee_label == 1:
         if time_label not in [0, 1]:
-            reply = debug+"請問你膝痛持續了多久？"
+            reply = "請問你膝痛持續了多久？"
         elif time_label == 1:
             reply = ("知道你膝痛持續了三個月以上。\n"
                 "三個月以上是屬於慢性疼痛，以下的為您介紹一些運動影片，請在沒有疼痛的情況下做。\n"
