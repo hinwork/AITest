@@ -108,35 +108,31 @@ def chat():
         if time_label not in [0, 1]:
             reply = debug+"請問你膝痛持續了多久？"
         elif time_label == 1:
-            reply = (debug+
-                "知道你膝痛持續了三個月以上。\n"
+            reply = ("知道你膝痛持續了三個月以上。\n"
                 "三個月以上是屬於慢性疼痛，以下的為您介紹一些運動影片，請在沒有疼痛的情況下做。\n"
                 "若身體有不適或情況變得嚴重，請諮詢醫生的意見。\n"
                 "#RecommandChronic"
             )
             time_label = 2
         elif time_label == 0:
-            reply = (debug+
-                "知道你膝痛持續了三個月內。\n"
+            reply = ("知道你膝痛持續了三個月內。\n"
                 "三個月內是屬於急性疼痛，以下的為您介紹一些運動影片，請在沒有疼痛的情況下做。\n"
                 "若身體有不適或情況變得嚴重，請諮詢醫生的意見。\n"
                 "#RecommandAcute"
             )
             time_label = 2
         else:
-            reply = debug+"謝謝你的資訊。"
+            reply = "謝謝你的資訊。"
     else:
         if user_clean in yes_words:
-            reply = debug+"請問你膝痛持續了多久？"
+            reply = "請問你膝痛持續了多久？"
             knee_label = 1
         elif user_clean in no_words:
-            reply = (debug+
-                "抱歉，我只能夠處理膝關節痛的問題。\n"
+            reply = ("抱歉，我只能夠處理膝關節痛的問題。\n"
                 "若想知道有關膝關節痛的資訊，請說出『我有膝痛』。"
             )
         else:
-            reply = (debug+
-                "抱歉，我只能夠處理膝關節痛的問題，\n"
+            reply = ("抱歉，我只能夠處理膝關節痛的問題，\n"
                 "請問你是否有膝關節不適嗎？"
             )
 
