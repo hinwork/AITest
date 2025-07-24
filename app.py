@@ -53,14 +53,14 @@ def chat():
     user = history[-1] if history else ""
     knee_label = data.get("knee_label")
     time_label = data.get("time_label")
-    end_words =  ['exit', 'quit', 'q', 'bye', '再見']
+    end_words =  ['exit', 'quit', 'q', 'bye', '再見','謝謝']
     user_clean = user.strip().lower()
     yes_words = ['yes', '是', '是的', '有']
     no_words = ['no', '否', '沒有', '不是', '不', '沒']
     debug = ""
     
     if user_clean in end_words:
-        return jsonify({"answer":"感謝查詢。","knee_label": -1, "time_label": -1})
+        return jsonify({"answer":"感謝查詢。#End","knee_label": -1, "time_label": -1})
     # 初次或沒輸入
     if not history or user.strip() == "":
         reply = "歡迎，若想知道有關膝關節痛的資訊，請說出『我有膝痛』。"
