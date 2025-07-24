@@ -60,6 +60,8 @@ def chat():
     debug = ""
     
     if user_clean in end_words:
+        knee_label = -1
+        time_label = -1
         return jsonify({"answer":"感謝查詢。#End","knee_label": -1, "time_label": -1})
     # 初次或沒輸入
     if not history or user.strip() == "":
